@@ -15,8 +15,12 @@ describe ("When User sees website", function () {
 			neaprequest.get('/')
 			.expect(/<title>NeapMap<\/title>/, done);
 		});
-		it("user should see map", function (done) {
+		it("Retail button has right text", function (done) {
 		neaprequest.get('/')
-			.expect(/??insert path here??/, done);
-	});
+			.expect(retailButton.innerHTML).to.equal("Retail");
+		});
+		it("Wholesale button has right text", function (done) {
+		neaprequest.get('/')
+			.expect(wholesaleButton.innerHTML).to.equal("Wholesale");
+		});
 });
