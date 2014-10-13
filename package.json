@@ -1,0 +1,32 @@
+{
+  "name": "cocaineforeveryone",
+  "version": "1.0.0",
+  "description": "Neapolitan-a-la-code experimenting with interative data",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neapolitan-a-la-code/cocaineforeveryone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/neapolitan-a-la-code/cocaineforeveryone/issues"
+  },
+  "homepage": "https://github.com/neapolitan-a-la-code/cocaineforeveryone",
+  "dependencies": {
+    "node": "^0.10.32"
+  },
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "istanbul": "^0.3.2",
+    "mocha": "^1.21.5",
+    "should": "^4.0.4",
+    "supertest": "^0.14.0"
+  }
+}
