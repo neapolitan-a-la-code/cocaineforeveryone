@@ -9,18 +9,35 @@ describe ("When User sees website", function () {
 
 		it("website should be return 200 ok", function (done) {
 			neaprequest.get('/')
-			.expect(200, done);
+				.expect(200, done);
 		});
 		it("title should be NeapMap", function (done) {
 			neaprequest.get('/')
-			.expect(/<title>NeapMap<\/title>/, done);
+				.expect(/<title>NeapMap<\/title>/, done);
+		});
+		it("Should have H1 title: Cocaine For Everyone" , function (done) {
+			neaprequest.get('/')
+				.expect(/<H1>Cocaine For Everyone<\/H1>/, done);
 		});
 		it("Retail button has right text", function (done) {
 		neaprequest.get('/')
-			.expect(retailButton.innerHTML).to.equal("Retail");
+				.expect(retailButton.innerHTML).to.equal("Retail");
 		});
 		it("Wholesale button has right text", function (done) {
 		neaprequest.get('/')
-			.expect(wholesaleButton.innerHTML).to.equal("Wholesale");
+				.expect(wholesaleButton.innerHTML).to.equal("Wholesale");
 		});
+		it("SVG has been made", function svgTest(done) {
+			neaprequest.get('/')
+				.expect(/<svg/);
+			setTimeout(svgTest, 5000);
+			done();
+		});
+		it("SVG has child path d=", function svgPath(done) {
+			neaprequest.get('/')
+				.expect(/<path d=/);
+			setTimeout(svgPath, 5000);
+			done();
+		});
+
 });
