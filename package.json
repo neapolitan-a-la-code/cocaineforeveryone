@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Neapolitan-a-la-code experimenting with interative data",
   "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
