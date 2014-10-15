@@ -4,7 +4,7 @@
 
 /* CSS goes here. */
 
-.subunits4 { fill: #ddc; }
+.ne110 { fill: #ddc; }
 
 .q0 { fill: #ffffcc; }
 .q1 { fill: #c2e699; }
@@ -21,7 +21,7 @@
 <script>
 
 var width = 960,
-    height = 960;
+    height = 700;
 
 var rateById = d3.map();
 
@@ -42,16 +42,16 @@ var svg = d3.select("body").append("svg")
     .attr("height", height);
 
 queue()
-    .defer(d3.json, "world4.json")
+    .defer(d3.json, "output.json")
     .defer(d3.tsv, "cocaineRetail2.tsv", function(d) { rateById.set(d.id, +d.rate); })
     .await(ready);
 
 
 function ready(error, world) {
   svg.append("g")
-      .attr("class", "subunits4")
+      .attr("class", "ne110")
     .selectAll("path")
-      .data(topojson.feature(world, world.objects.subunits4).features)
+      .data(topojson.feature(world, world.objects.ne110).features)
     .enter().append("path")
       .attr("class", function(d) { return quantize(rateById.get(d.id)); })
       .attr("d", path);
