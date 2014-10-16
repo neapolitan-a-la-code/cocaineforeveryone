@@ -1,34 +1,87 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-
-/* CSS goes here. */
-
-.ne110 { fill: #ddc; }
-
-.q0 { fill: #f1eef6; }
-.q1 { fill: #bdc9e1; }
-.q2 { fill: #74a9cf; }
-.q3 { fill: #2b8cbe; }
-.q4 { fill: #045a8d; }
-
-
-</style>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>NeapMap</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    
+    <style>
+    
+    /* CSS goes here. */
+    
+    .ne110 { fill: #ddc; }
+    
+    .q0 { fill: #f1eef6; }
+    .q1 { fill: #bdc9e1; }
+    .q2 { fill: #74a9cf; }
+    .q3 { fill: #2b8cbe; }
+    .q4 { fill: #045a8d; }
+    
+    
+    </style>
+  </head>
 <body>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-1 col-md-1"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12" id="titlediv">
+          <h1>NeapMap</h1>
+          
+    </div>
+  </div>
+</div>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-1 col-md-1"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12" id="buttondiv">
+                
+      <input type="submit" id="retail" value="Retail" onclick="retailFill()"/>
+      <input type="submit" id="whole" value="Wholesale" onclick="wsFill()"/>
+          
+    </div>
+  </div>
+</div>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-1 col-md-1"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12" id="outermapdiv">
+      <div id="mapdiv">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src="http://d3js.org/queue.v1.min.js"></script>
 <script>
+
+var worldjson;
 
 var width = 960,
     height = 700;
 
 var rateById = d3.map();
 
-var quantize = d3.scale.quantize()
+var quantizeR = d3.scale.quantize()
     .domain([0, 300000])
     .range(d3.range(5).map(function(i) { return "q" + i; }));
+    
+var quantizeW = d3.scale.quantize()
+    .domain([0, 100000])
+    .range(d3.range(5).map(function(i) { return "q" + i; }));
 
+  
 var projection = d3.geo.mercator()
     .scale((width + 1) / 2 / Math.PI)
     .translate([width / 2, height / 2])
@@ -37,28 +90,86 @@ var projection = d3.geo.mercator()
 var path = d3.geo.path()
     .projection(projection);
 
-var svg = d3.select("body").append("svg")
+// change this append
+var svg = d3.select("#mapdiv").append("svg")
     .attr("width", width)
     .attr("height", height);
 
+
 queue()
     .defer(d3.json, "output.json")
-    .defer(d3.tsv, "cocaineRetail2.tsv", function(d) { rateById.set(d.id, +d.rate); })
+    .defer(d3.tsv, "pricedata.tsv", function(d) { rateById.set(d.id, +d.rateR); })
     .await(ready);
+    
+function wRender() {
+queue()
+    .defer(d3.json, "output.json")
+    .defer(d3.tsv, "pricedata.tsv", function(d) { rateById.set(d.id, +d.rateW); })
+    .await(wsFill(null, d3.json));
+}
+
+function rRender() {
+queue()
+    .defer(d3.json, "output.json")
+    .defer(d3.tsv, "pricedata.tsv", function(d) { rateById.set(d.id, +d.rateR); })
+    .await(retailFill);
+}
 
 
-function ready(error, world) {
+function retailFill(error, world2) {
+  
   svg.append("g")
       .attr("class", "ne110")
-    .selectAll("path")
-      .data(topojson.feature(world, world.objects.ne110).features)
-    .enter().append("path")
-      .attr("class", function(d) { return quantize(rateById.get(d.id)); })
-      .attr("d", path);
+      .selectAll("path")
+      .data(topojson.feature(worldjson, worldjson.objects.ne110).features)
+        .enter().append("path")
+        .attr("class", function(d) { return quantizeR(rateById.get(d.id)); })
+        .attr("d", path);
 
 };
 
+function wsFill(error, world2) {
+  svg.append("g")
+      .attr("class", "ne110")
+      .selectAll("path")
+      .data(topojson.feature(worldjson, worldjson.objects.ne110).features)
+        .enter().append("path")
+        .attr("class", function(d) { return quantizeW(rateById.get(d.id)); })
+        .attr("d", path);
+
+};
+
+function ready(error, world) {
+  
+  worldjson = world;
+  
+  svg.append("g")
+      .attr("class", "ne110")
+      .selectAll("path")
+      .data(topojson.feature(world, world.objects.ne110).features)
+        .enter().append("path")
+        .attr("class", function(d) { return quantizeR(rateById.get(d.id)); })
+        .attr("d", path);
+        
+
+   
+
+
+};
+
+   document.addEventListener('DOMContentLoaded', init, false);
+      function init(){
+       
+        var wbutton = document.getElementById('whole');
+        wbutton.addEventListener('click', wRender, true);
+        
+        var rbutton = document.getElementById('retail');
+        rbutton.addEventListener('click', rRender, true);
+        
+      };
+
 d3.select(self.frameElement).style("height", height + "px");
+
 
 
 
