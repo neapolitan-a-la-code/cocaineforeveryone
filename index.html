@@ -17,6 +17,20 @@
     .q2 { fill: #74a9cf; }
     .q3 { fill: #2b8cbe; }
     .q4 { fill: #045a8d; }
+
+   /*#outermapdiv {
+      position: relative;
+    }
+
+    #outermapdiv #mapdiv {
+      position: absolute;
+      width: 100%;
+    }*/
+
+    #svg {
+      width: 100%
+      height: auto;
+    }
     
     
     </style>
@@ -51,9 +65,6 @@
   <div class="row">
     <div class="col-lg-1 col-md-1"></div>
     <div class="col-lg-10 col-md-10 col-sm-12" id="outermapdiv">
-      <div id="mapdiv">
-        
-      </div>
     </div>
   </div>
 </div>
@@ -93,9 +104,12 @@ var path = d3.geo.path()
     .projection(projection);
 
 // change this append
-var svg = d3.select("#mapdiv").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+var svg = d3.select("#outermapdiv")
+    .append("div")
+    .attr("id", "svg")
+    .append("svg")
+    .attr("viewBox", "0 0 " + width + " " + height)
+    .attr("preserveAspectRatio", "xMinYMin");
 
 
 queue()
