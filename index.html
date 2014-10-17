@@ -192,17 +192,23 @@ var tip = d3.tip()
     .offset([0, 0])
     .direction('s')
     .html(function(d) {
-      if(typeof rateByIdR.get(d.id)==="undefined"||typeof rateByIdW.get(d.id)==="undefined") {
-        return null;
+      
+      var toWrite = "<span style='color:red'>" + d.id + "</span>";
+      
+      if(!isNaN(rateByIdR.get(d.id))) {
+        toWrite += "<br> Retail/kg: $" + rateByIdR.get(d.id);
       }
       
-      return "<span style='color:red'>" + d.id + "</span>" +
-      "<br> Retail/kg: $" + rateByIdR.get(d.id) +
-      "<br> Wholesale/kg: $" + rateByIdW.get(d.id);
+      if(!isNaN(rateByIdW.get(d.id))) {
+        toWrite += "<br> Wholesale/kg: $" + rateByIdW.get(d.id);
+      }
+      
+      return toWrite;
       
   })
   
 svg.call(tip);
+alert(!isNaN(rateByIdW.get("Brazil")));
 
 
 queue()
