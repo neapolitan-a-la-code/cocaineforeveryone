@@ -12,11 +12,17 @@
     
     .ne110 { fill: #ddc; }
     
-    .q0 { fill: #f1eef6; }
-    .q1 { fill: #bdc9e1; }
-    .q2 { fill: #74a9cf; }
-    .q3 { fill: #2b8cbe; }
-    .q4 { fill: #045a8d; }
+    .Rq0 { fill: #ffffcc; }
+    .Rq1 { fill: #a1dab4; }
+    .Rq2 { fill: #41b6c4; }
+    .Rq3 { fill: #2c7fb8; }
+    .Rq4 { fill: #253494; }
+
+    .Wq0 { fill: #ffffcc; }
+    .Wq1 { fill: #c2e699; }
+    .Wq2 { fill: #78c679; }
+    .Wq3 { fill: #31a354; }
+    .Wq4 { fill: #006837; }
 
     #svg {
       width: 100%
@@ -117,11 +123,11 @@ var rateByIdW = d3.map();
 
 var quantizeR = d3.scale.quantize()
     .domain([0, 300000])
-    .range(d3.range(5).map(function(i) { return "q" + i; }));
+    .range(d3.range(5).map(function(i) { return "Rq" + i; }));
     
 var quantizeW = d3.scale.quantize()
-    .domain([2500, 160000])
-    .range(d3.range(5).map(function(i) { return "q" + i; }));
+    .domain([2500, 100000])
+    .range(d3.range(5).map(function(i) { return "Wq" + i; }));
 
   
 var projection = d3.geo.mercator()
@@ -149,39 +155,6 @@ queue()
     })
     .await(ready);
 
-function retailFill(error, world2) {
-  
-  svg.append("g")
-      .attr("class", "ne110")
-      .selectAll("path")
-      .data(topojson.feature(worldjson, worldjson.objects.ne110).features)
-        .enter().append("path")
-        .attr("class", function(d) { return quantizeR(rateByIdR.get(d.id)); })
-        .attr("d", path);
-
-};
-
-function wsFill(error, world2) {
-  svg.append("g")
-      .attr("class", "ne110")
-      .selectAll("path")
-      .data(topojson.feature(worldjson, worldjson.objects.ne110).features)
-        .enter().append("path")
-        .attr("class", function(d) {
-          
-            if (rateByIdW.get(d.id)!==0) {
-            return quantizeW(rateByIdW.get(d.id));
-            }
-            else {
-            return "null";
-            }
-        })
-            //  return quantizeW(rateByIdW.get(d.id)); })
-          
-                
-        .attr("d", path);
-
-};
 
 function ready(error, world) {
   
@@ -192,14 +165,32 @@ function ready(error, world) {
       .selectAll("path")
       .data(topojson.feature(world, world.objects.ne110).features)
         .enter().append("path")
-        .attr("class", function(d) { return quantizeR(rateByIdR.get(d.id)); })
+        // .attr("class", function(d) { return quantizeR(rateByIdR.get(d.id)); })
         .attr("d", path);
         
 //default map to load here
-   
-
-
 };
+
+var countries = svg.selectAll("path");
+
+function wsFill() {
+  countries = svg.selectAll("path");
+  
+  countries.attr("class", function(d)   
+    // if (rateByIdW.get(d.id)!==0) 
+      { return quantizeW(rateByIdW.get(d.id)); }
+    // else { return "null"; }
+    );
+
+    // this will stop the values 0 being coloured, 0 prepresents no value not $0 as blank data previously broke the code.
+  // });
+};
+
+function retailFill() {
+  countries = svg.selectAll("path");
+  countries.attr("class", function(d) { return quantizeR(rateByIdR.get(d.id)); });
+
+}
 
    document.addEventListener('DOMContentLoaded', init, false);
       function init(){
