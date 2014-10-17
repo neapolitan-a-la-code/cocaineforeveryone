@@ -208,8 +208,6 @@ var tip = d3.tip()
   })
   
 svg.call(tip);
-alert(!isNaN(rateByIdW.get("Brazil")));
-
 
 queue()
     .defer(d3.json, "output.json")
