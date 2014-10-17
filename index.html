@@ -101,8 +101,16 @@
       background-color: #4292c6;
     }
 
-
-
+    
+        
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 2px;
+    }
 
 
 
@@ -140,6 +148,7 @@
 
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src="http://d3js.org/queue.v1.min.js"></script>
 <script>
@@ -177,6 +186,23 @@ var svg = d3.select("#outermapdiv")
     .append("svg")
     .attr("viewBox", "0 0 " + width + " " + height)
     .attr("preserveAspectRatio", "xMinYMin");
+    
+var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([0, 0])
+    .direction('s')
+    .html(function(d) {
+      if(typeof rateByIdR.get(d.id)==="undefined"||typeof rateByIdW.get(d.id)==="undefined") {
+        return null;
+      }
+      
+      return "<span style='color:red'>" + d.id + "</span>" +
+      "<br> Retail/kg: $" + rateByIdR.get(d.id) +
+      "<br> Wholesale/kg: $" + rateByIdW.get(d.id);
+      
+  })
+  
+svg.call(tip);
 
 
 queue()
@@ -198,7 +224,9 @@ function ready(error, world) {
       .data(topojson.feature(world, world.objects.ne110).features)
         .enter().append("path")
         // .attr("class", function(d) { return quantizeR(rateByIdR.get(d.id)); })
-        .attr("d", path);
+        .attr("d", path)
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide);
         
 //default map to load here
 };
@@ -208,8 +236,8 @@ var countries = svg.selectAll("path");
 function wsFill() {
   countries = svg.selectAll("path");
   
-  countries.attr("class", function(d)   
-    // if (rateByIdW.get(d.id)!==0) 
+  countries.attr("class", function(d)
+    // if (rateByIdW.get(d.id)!==0)
       { return quantizeW(rateByIdW.get(d.id)); }
     // else { return "null"; }
     );
@@ -226,6 +254,10 @@ function retailFill() {
 
    document.addEventListener('DOMContentLoaded', init, false);
       function init(){
+       
+       svg.selectAll("path")
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide)
        
         var wbutton = document.getElementById('whole');
         wbutton.addEventListener('click', wsFill, true);
