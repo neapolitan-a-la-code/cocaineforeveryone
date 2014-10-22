@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>Neapolitan Cocaine Map</title>
+    <title>Visualizing connectivity worldwide</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     
     <style>
@@ -121,17 +121,17 @@
 <div class="container-fluid">
 
   <div class="row">
-    <h1>Price of Cocaine Salts US$/kg</h1>
+    <h1>Connections per 100 people</h1>
 </div>
 
 <div class="container-fluid">
   <div class="row">
     <div class="col-lg-1 col-md-1"></div>
     <div class="col-lg-5 col-md-5 col-sm-6 col-sx-5" id="outerbutton">
-      <input type="submit" id="retail" value="Retail" onclick="retailFill()"/>
+      <input type="submit" id="retail" value="Internet users" onclick="retailFill()"/>
     </div>
     <div class="col-lg-5 col-md-5 col-sm-6 col-sx-5" id="outerbutton">
-      <input type="submit" id="whole" value="Wholesale" onclick="wsFill()"/>
+      <input type="submit" id="whole" value="Mobile phones" onclick="wsFill()"/>
     </div>
   </div>
 </div>
@@ -163,11 +163,11 @@ var rateByIdR = d3.map();
 var rateByIdW = d3.map();
 
 var quantizeR = d3.scale.quantize()
-    .domain([0, 300000])
+    .domain([-25, 96])
     .range(d3.range(6).map(function(i) { return "Rq" + i; }));
     
 var quantizeW = d3.scale.quantize()
-    .domain([0, 100000])
+    .domain([5, 304])
     .range(d3.range(6).map(function(i) { return "Wq" + i; }));
 
   
@@ -196,11 +196,11 @@ var tip = d3.tip()
       var toWrite = "<span style='color:red'>" + d.id + "</span>";
       
       if(!isNaN(rateByIdR.get(d.id))) {
-        toWrite += "<br> Retail/kg: $" + rateByIdR.get(d.id);
+        toWrite += "<br> Net connections/100: " + rateByIdR.get(d.id);
       }
       
       if(!isNaN(rateByIdW.get(d.id))) {
-        toWrite += "<br> Wholesale/kg: $" + rateByIdW.get(d.id);
+        toWrite += "<br> Mobile phones/100: " + rateByIdW.get(d.id);
       }
       
       return toWrite;
@@ -211,7 +211,7 @@ svg.call(tip);
 
 queue()
     .defer(d3.json, "output.json")
-    .defer(d3.tsv, "pd2.tsv", function(d) {
+    .defer(d3.tsv, "conndata.tsv", function(d) {
       rateByIdR.set(d.id, +d.rateR);
       rateByIdW.set(d.id, +d.rateW);
     })
@@ -264,10 +264,10 @@ function retailFill() {
         .on('mouseout', tip.hide)
        
         var wbutton = document.getElementById('whole');
-        wbutton.addEventListener('click', wsFill, true);
+        wbutton.addEventListener('click', math.Round(wsFill), true);
         
         var rbutton = document.getElementById('retail');
-        rbutton.addEventListener('click', retailFill, true);
+        rbutton.addEventListener('click', math.Round(retailFill), true);
         
       };
 
